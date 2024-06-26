@@ -1,5 +1,5 @@
 {
-  "name": "aisuda",
+  "name": "ag-libs",
   "workspaces": [
     "packages/amis-formula",
     "packages/amis-core",
@@ -23,7 +23,7 @@
     "prepare": "husky install",
     "coverage": "jest --coverage --collectCoverage=v8",
     "version": "lerna version",
-    "release": "npm run build --workspaces && lerna publish from-package --registry=https://registry.npmjs.org --ignore-scripts",
+    "release": "npm run build --workspaces && lerna publish from-package --registry=http://localhost:4873 --ignore-scripts",
     "revision": "ts-node ./scripts/generate-revision.ts",
     "getChangeLog": "ts-node ./scripts/getChangeLog",
     "stylelint": "npx stylelint 'packages/**/*.scss'",
