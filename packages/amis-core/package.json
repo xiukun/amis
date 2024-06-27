@@ -1,6 +1,6 @@
 {
   "name": "amis-core",
-  "version": "6.5.0",
+  "version": "6.5.0-ag.1",
   "description": "amis-core",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -49,7 +49,7 @@
   ],
   "dependencies": {
     "@rc-component/mini-decimal": "^1.0.1",
-    "amis-formula": "^6.5.0",
+    "amis-formula": "^6.5.0-ag.1",
     "classnames": "2.3.2",
     "file-saver": "^2.0.2",
     "hoist-non-react-statics": "^3.3.2",
@@ -106,5 +106,5 @@
       "/.rollup.cache/"
     ]
   },
-  "gitHead": "37d23b4a8eb1c663bc38e8dd9040889ea1526ec4"
+  "gitHead": "f46a35952594fea8fb93526afe23c8082a4065e1"
 }
