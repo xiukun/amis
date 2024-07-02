@@ -1,7 +1,4 @@
 <div align="center">
-  <p>
-    <img width="284" src="https://github.com/baidu/amis/raw/master/examples/static/logo.png">
-  </p>
 
 [文档（国内）](https://aisuda.bce.baidu.com/amis/) |
 [文档（国外）](https://baidu.github.io/amis/) |
@@ -9,11 +6,6 @@
 [amis-admin](https://github.com/aisuda/amis-admin) |
 [爱速搭](https://aisuda.baidu.com/)
 
-</div>
-
-<div align="center">
-  如流群：3395342 |
-  如流群2：5511067|
 </div>
 
 <div align="center">

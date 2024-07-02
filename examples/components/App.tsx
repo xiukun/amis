@@ -394,13 +394,13 @@ export class App extends React.PureComponent<{
             >
               <DocSearch theme={theme} />
             </div>
-            <a
+            {/* <a
               className="gh-icon"
               href="https://github.com/baidu/amis"
               target="_blank"
             >
               <i className="fa fa-github" />
-            </a>
+            </a> */}
           </>
         ) : null}
       </>
