@@ -11,6 +11,7 @@ export * from 'amis-ui';
 import './preset';
 
 // 注册渲染器
+import './ag-index'; // ag自定义组件
 import './renderers/Action';
 import './renderers/Alert';
 import './renderers/App';

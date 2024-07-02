@@ -1,0 +1,98 @@
+@import '//at.alicdn.com/t/c/font_4602945_yqa8m9v702b.css';
+
+.ag-splitter-container.clearfix::after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: ' ';
+  clear: both;
+  height: 0;
+}
+
+.ag-splitter-container {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  position: relative;
+}
+
+.ag-splitter-container-mask {
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.splitter-pane.vertical.splitter-paneL {
+  position: absolute;
+  left: 0;
+  height: 100%;
+  padding-right: 3px;
+}
+
+.splitter-pane.vertical.splitter-paneR {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  padding-left: 3px;
+}
+
+.splitter-pane.horizontal.splitter-paneL {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.splitter-pane.horizontal.splitter-paneR {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-top: 3px;
+}
+.splitter-pane-resizer {
+  box-sizing: border-box;
+  background: #000;
+  position: absolute;
+  opacity: 0.2;
+  z-index: 1;
+  background-clip: padding;
+  background-clip: padding-box;
+}
+
+.splitter-pane-resizer.horizontal {
+  height: 6px;
+  width: 100%;
+  background: #e5e6eb;
+  cursor: row-resize;
+}
+
+.splitter-pane-resizer.horizontal:before {
+  content: '\e600';
+  font-family: 'iconfont';
+  font-size: 13px;
+  color: #000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.splitter-pane-resizer.vertical {
+  width: 6px;
+  height: 100%;
+  background: #e5e6eb;
+  cursor: col-resize;
+}
+
+.splitter-pane-resizer.vertical:before {
+  content: '\e607';
+  font-family: 'iconfont';
+  font-size: 13px;
+  color: #000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
