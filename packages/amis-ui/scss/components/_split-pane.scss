@@ -1,5 +1,3 @@
-@import '//at.alicdn.com/t/c/font_4602945_yqa8m9v702b.css';
-
 .ag-splitter-container.clearfix::after {
   visibility: hidden;
   display: block;
@@ -69,14 +67,14 @@
 }
 
 .splitter-pane-resizer.horizontal:before {
-  content: '\e600';
+  content: '\e927';
   font-family: 'iconfont';
   font-size: 13px;
   color: #000;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .splitter-pane-resizer.vertical {
@@ -87,7 +85,7 @@
 }
 
 .splitter-pane-resizer.vertical:before {
-  content: '\e607';
+  content: '\e927';
   font-family: 'iconfont';
   font-size: 13px;
   color: #000;
