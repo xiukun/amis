@@ -143,6 +143,16 @@ export type TableColumnObject = {
   align?: 'left' | 'right' | 'center' | 'justify';
 
   /**
+   * 列垂直对齐方式
+   */
+  vAlign?: 'top' | 'middle' | 'bottom';
+
+  /**
+   * 标题左右对齐方式
+   */
+  headerAlign?: 'left' | 'right' | 'center' | 'justify';
+
+  /**
    * 列样式表
    */
   className?: string;
@@ -538,6 +548,7 @@ export default class Table extends React.Component<TableProps, object> {
     resizable: true
   };
 
+  dom = React.createRef<HTMLDivElement>();
   table?: HTMLTableElement;
   sortable?: Sortable;
   dragTip?: HTMLElement;
@@ -977,6 +988,15 @@ export default class Table extends React.Component<TableProps, object> {
 
     const scoped = this.context as IScopedContext;
     scoped.unRegisterComponent(this);
+  }
+
+  scrollToTop() {
+    this.dom.current?.scrollIntoView();
+    if (this.props.autoFillHeight) {
+      this.table?.scrollIntoView();
+    }
+    const scrolledY = window.scrollY;
+    scrolledY && window.scroll(0, scrolledY);
   }
 
   rowPathPlusOffset(path: string, offset = 0) {
@@ -1866,7 +1886,10 @@ export default class Table extends React.Component<TableProps, object> {
     if (style?.width) {
       delete style.width;
     }
-    if (column.pristine.align) {
+
+    if (column.pristine.headerAlign) {
+      style.textAlign = column.pristine.headerAlign;
+    } else if (column.pristine.align) {
       style.textAlign = column.pristine.align;
     }
 
@@ -2355,39 +2378,42 @@ export default class Table extends React.Component<TableProps, object> {
           </li>
         ) : null}
 
-        {store.toggableColumns.map(column => (
-          <li
-            className={cx('ColumnToggler-menuItem')}
-            key={column.index}
-            onClick={async () => {
-              const {data, dispatchEvent} = this.props;
-              let columns = store.activeToggaleColumns.map(
-                item => item.pristine
-              );
-              if (!column.toggled) {
-                columns.push(column.pristine);
-              } else {
-                columns = columns.filter(c => c.name !== column.pristine.name);
-              }
-              const rendererEvent = await dispatchEvent(
-                'columnToggled',
-                createObject(data, {
-                  columns
-                })
-              );
+        {!config?.draggable &&
+          store.toggableColumns.map(column => (
+            <li
+              className={cx('ColumnToggler-menuItem')}
+              key={column.index}
+              onClick={async () => {
+                const {data, dispatchEvent} = this.props;
+                let columns = store.activeToggaleColumns.map(
+                  item => item.pristine
+                );
+                if (!column.toggled) {
+                  columns.push(column.pristine);
+                } else {
+                  columns = columns.filter(
+                    c => c.name !== column.pristine.name
+                  );
+                }
+                const rendererEvent = await dispatchEvent(
+                  'columnToggled',
+                  createObject(data, {
+                    columns
+                  })
+                );
 
-              if (rendererEvent?.prevented) {
-                return;
-              }
+                if (rendererEvent?.prevented) {
+                  return;
+                }
 
-              column.toggleToggle();
-            }}
-          >
-            <Checkbox size="sm" classPrefix={ns} checked={column.toggled}>
-              {column.label ? render('tpl', column.label) : null}
-            </Checkbox>
-          </li>
-        ))}
+                column.toggleToggle();
+              }}
+            >
+              <Checkbox size="sm" classPrefix={ns} checked={column.toggled}>
+                {column.label ? render('tpl', column.label) : null}
+              </Checkbox>
+            </li>
+          ))}
       </ColumnToggler>
     );
   }
@@ -2814,6 +2840,7 @@ export default class Table extends React.Component<TableProps, object> {
 
     return (
       <div
+        ref={this.dom}
         className={cx('Table', {'is-mobile': mobileUI}, className, {
           'Table--unsaved': !!store.modified || !!store.moved,
           'Table--autoFillHeight': autoFillHeight
