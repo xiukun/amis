@@ -3074,10 +3074,11 @@ export const getEventControlConfig = (
         } else if (typeof action.args?.value === 'object') {
           config.args.value = objectToComboArray(action.args?.value);
           config.args['__containerType'] = 'appoint';
-          // 如果有index，认为是给指定序号的combo赋值，所以认为是指定序号的赋值方式
-          if (action.args.index !== undefined) {
-            config.args['__comboType'] = 'appoint';
-          }
+          config.args['__comboType'] = 'appoint';
+          // // 如果有index，认为是给指定序号的combo赋值，所以认为是指定序号的赋值方式
+          // if (action.args.index !== undefined) {
+          //   config.args['__comboType'] = 'appoint';
+          // }
         } else if (
           action.actionType === 'setValue' &&
           typeof action.args?.path === 'string' &&
@@ -3189,7 +3190,11 @@ export const getEventControlConfig = (
 
         if (['setValue'].includes(action.actionType)) {
           const root = getRootManager(manager);
-          let schema = JSONGetById(root.store.schema, config.__cmptId, 'id');
+          let schema = JSONGetById(
+            root.store.schema,
+            config.__cmptId || action?.componentId,
+            'id'
+          );
           if (schema) {
             let __isScopeContainer = DATA_CONTAINER.includes(schema.type);
             config.__isScopeContainer = __isScopeContainer;
