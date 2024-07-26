@@ -3193,7 +3193,7 @@ export const getEventControlConfig = (
           const root = getRootManager(manager);
           let schema = JSONGetById(
             root.store.schema,
-            config.__cmptId || action?.componentId,
+            config.__cmptId || action.componentId,
             'id'
           );
           if (schema) {
