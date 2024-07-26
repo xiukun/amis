@@ -3074,11 +3074,10 @@ export const getEventControlConfig = (
         } else if (typeof action.args?.value === 'object') {
           config.args.value = objectToComboArray(action.args?.value);
           config.args['__containerType'] = 'appoint';
-          config.args['__comboType'] = 'appoint';
-          // // 如果有index，认为是给指定序号的combo赋值，所以认为是指定序号的赋值方式
-          // if (action.args.index !== undefined) {
-          //   config.args['__comboType'] = 'appoint';
-          // }
+          // 如果有index，认为是给指定序号的combo赋值，所以认为是指定序号的赋值方式
+          if (action.args.index !== undefined) {
+            config.args['__comboType'] = 'appoint';
+          }
         } else if (
           action.actionType === 'setValue' &&
           typeof action.args?.path === 'string' &&
