@@ -17,6 +17,7 @@ import {
   openContextMenus,
   closeContextMenus
 } from './ContextMenu';
+import {SplitPane, type SplitPaneProps} from './ag-index'; // ag 自定义组件
 import AsideNav from './AsideNav';
 import Avatar from './Avatar';
 import Button from './Button';
@@ -136,6 +137,8 @@ import VerificationCode from './VerificationCode';
 
 export {
   NotFound,
+  SplitPane, // ag 拆分面板组件
+  SplitPaneProps, //ag 拆分面板type
   Alert as AlertComponent,
   alert,
   Avatar,

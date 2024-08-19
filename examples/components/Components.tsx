@@ -69,6 +69,13 @@ export const components = [
         )
       },
       {
+        label: 'SplitPane 拆分面板',
+        path: '/zh-CN/components/split-pane',
+        component: React.lazy(() =>
+          import('../../docs/zh-CN/components/split-pane.md').then(wrapDoc)
+        )
+      },
+      {
         label: 'HBox 布局',
         path: '/zh-CN/components/hbox',
         component: React.lazy(() =>

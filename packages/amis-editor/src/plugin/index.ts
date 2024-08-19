@@ -1,4 +1,5 @@
 // 布局容器
+export * from './ag-index'; // ag 自定义组件
 export * from './Flex'; // flex布局
 export * from './Grid'; // 分栏
 export * from './Container'; // 容器
