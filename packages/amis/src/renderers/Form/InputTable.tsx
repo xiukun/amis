@@ -42,6 +42,13 @@ import moment from 'moment';
 
 import type {SchemaTokenizeableString} from '../../Schema';
 
+// 占位符定义为常量
+const PLACE_HOLDER = '__isPlaceholder';
+export type TableDataItem = {
+  [PLACE_HOLDER]?: boolean;
+  [x: string | number]: any;
+};
+
 export interface TableControlSchema
   extends FormBaseControl,
     Omit<TableSchema, 'type'> {
@@ -252,7 +259,7 @@ export interface TableProps
     > {}
 
 export interface TableState {
-  items: Array<any>;
+  items: Array<TableDataItem>;
   columns: Array<any>;
   editIndex: string;
   isCreateMode?: boolean;
@@ -375,7 +382,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
       props.$schema.static !== prevProps.$schema.static
     ) {
       const items = this.state.items.filter(
-        item => !item.hasOwnProperty('__isPlaceholder')
+        item => !item.hasOwnProperty(PLACE_HOLDER)
       );
       toUpdate = {
         ...toUpdate,
@@ -542,7 +549,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
   async emitValue(value?: any[]) {
     const items =
       value ??
-      this.state.items.filter(item => !item.hasOwnProperty('__isPlaceholder'));
+      this.state.items.filter(item => !item.hasOwnProperty(PLACE_HOLDER));
     const {onChange} = this.props;
     const isPrevented = await this.dispatchEvent('change');
     if (!isPrevented) {
@@ -605,6 +612,11 @@ export default class FormTable extends React.Component<TableProps, TableState> {
           ) {
             // 不要重复加入
             items.push(toAdd);
+
+            // 加入与addItem同样属性标记为新增项
+            if (needConfirm !== false) {
+              Reflect.set(toAdd, PLACE_HOLDER, true);
+            }
           }
         });
 
@@ -682,7 +694,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
       // 需要同addItem一致添加__placeholder属性
       items = spliceTree(items, next, 0, {
         ...item,
-        __isPlaceholder: true
+        [PLACE_HOLDER]: true
       });
     }
     this.reUseRowId(items, originItems, next);
@@ -718,8 +730,8 @@ export default class FormTable extends React.Component<TableProps, TableState> {
     index = index || `${this.state.items.length - 1}`;
     const {needConfirm, scaffold, columns, data} = this.props;
     let items = this.state.items.concat();
-    let value: any = {
-      __isPlaceholder: true
+    let value: TableDataItem = {
+      [PLACE_HOLDER]: true
     };
 
     if (Array.isArray(columns)) {
@@ -765,7 +777,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
     };
 
     if (needConfirm === false) {
-      delete value.__isPlaceholder;
+      Reflect.deleteProperty(value, PLACE_HOLDER);
     }
 
     const indexes = index.split('.').map(item => parseInt(item, 10));
@@ -906,7 +918,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
     let item = {
       ...getTree(items, indexes)
     };
-    const isNew = item.hasOwnProperty('__isPlaceholder');
+    const isNew = item.hasOwnProperty(PLACE_HOLDER);
     const confirmEventName = isNew ? 'addConfirm' : 'editConfirm';
     let isPrevented = await this.dispatchEvent(confirmEventName, {
       index: indexes[indexes.length - 1],
@@ -947,7 +959,8 @@ export default class FormTable extends React.Component<TableProps, TableState> {
       };
     }
 
-    delete item.__isPlaceholder;
+    Reflect.deleteProperty(item, PLACE_HOLDER);
+
     const originItems = items;
     items = spliceTree(items, indexes, 1, item);
     this.reUseRowId(items, originItems, indexes);
@@ -983,7 +996,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
     let item = {
       ...getTree(items, indexes)
     };
-    const isNew = item.hasOwnProperty('__isPlaceholder');
+    const isNew = item.hasOwnProperty(PLACE_HOLDER);
 
     const originItems = items;
     if (isNew) {
@@ -1127,16 +1140,27 @@ export default class FormTable extends React.Component<TableProps, TableState> {
   }
 
   buildItemProps(item: any, index: number) {
+    const rowProps: any = {};
+
+    const minLength = this.resolveVariableProps(this.props, 'minLength');
+    const maxLength = this.resolveVariableProps(this.props, 'maxLength');
+
+    rowProps.inputTableCanAddItem = maxLength
+      ? maxLength > this.state.items.length
+      : true;
+    rowProps.inputTableCanRemoveItem = minLength
+      ? minLength < this.state.items.length
+      : true;
+
     if (this.props.needConfirm === false) {
-      return {
-        quickEditEnabled: true
-      };
+      rowProps.quickEditEnabled = true;
+      return rowProps;
     } else if (
       !this.props.editable &&
       !this.props.addable &&
       !this.state.isCreateMode
     ) {
-      return null;
+      return rowProps;
     }
 
     const perPage = this.props.perPage;
@@ -1146,10 +1170,9 @@ export default class FormTable extends React.Component<TableProps, TableState> {
       offset = (page - 1) * perPage;
     }
 
-    return {
-      quickEditEnabled:
-        this.state.editIndex === this.rowPathPlusOffset(item.path, offset)
-    };
+    rowProps.quickEditEnabled =
+      this.state.editIndex === this.rowPathPlusOffset(item.path, offset);
+    return rowProps;
   }
 
   buildColumns(
@@ -1157,7 +1180,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
     isCreateMode = false,
     editRowIndex?: string
   ): Array<any> {
-    const {env, enableStaticTransform, testIdBuilder} = this.props;
+    const {env, enableStaticTransform, mobileUI, testIdBuilder} = this.props;
     let columns: Array<any> = Array.isArray(props.columns)
       ? props.columns.concat()
       : [];
@@ -1165,8 +1188,6 @@ export default class FormTable extends React.Component<TableProps, TableState> {
     const __ = this.props.translate;
     const needConfirm = this.props.needConfirm;
     const showIndex = this.props.showIndex;
-    const minLength = this.resolveVariableProps(this.props, 'minLength');
-    const maxLength = this.resolveVariableProps(this.props, 'maxLength');
     const isStatic = this.props.static;
     const disabled = this.props.disabled;
 
@@ -1177,15 +1198,18 @@ export default class FormTable extends React.Component<TableProps, TableState> {
           key,
           rowIndex,
           rowIndexPath,
-          offset
+          offset,
+          inputTableCanAddItem
         }: {
           key: any;
           rowIndex: number;
           rowIndexPath: string;
           offset: number;
+          inputTableCanAddItem: boolean;
+          inputTableCanRemoveItem: boolean;
         }) =>
           (this.state.editIndex && needConfirm !== false) ||
-          maxLength <= this.state.items.length ? null : (
+          !inputTableCanAddItem ? null : (
             <Button
               classPrefix={ns}
               size="sm"
@@ -1395,7 +1419,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
             offset: number;
           }) =>
             this.state.editIndex ||
-            (data && data.hasOwnProperty('__isPlaceholder')) ? null : (
+            (data && data.hasOwnProperty(PLACE_HOLDER)) ? null : (
               <Button
                 classPrefix={ns}
                 size="sm"
@@ -1549,18 +1573,20 @@ export default class FormTable extends React.Component<TableProps, TableState> {
           rowIndex,
           rowIndexPath,
           data,
-          offset
+          offset,
+          inputTableCanRemoveItem
         }: {
           key: any;
           rowIndex: number;
           rowIndexPath: string;
           data: any;
           offset: number;
+          inputTableCanRemoveItem: boolean;
         }) =>
           ((this.state.editIndex ||
-            (data && data.hasOwnProperty('__isPlaceholder'))) &&
+            (data && data.hasOwnProperty(PLACE_HOLDER))) &&
             needConfirm !== false) ||
-          minLength >= this.state.items.length ? null : (
+          !inputTableCanRemoveItem ? null : (
             <Button
               classPrefix={ns}
               size="sm"
@@ -1601,7 +1627,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
           buttons: [],
           label: __('Table.operation'),
           className: 'v-middle nowrap',
-          fixed: 'right',
+          fixed: mobileUI ? '' : 'right', // 移动端不开启固定列
           width: 150,
           innerClassName: 'm-n'
         };
@@ -1696,7 +1722,7 @@ export default class FormTable extends React.Component<TableProps, TableState> {
             ...(lastModifiedRow?.index === editIndex
               ? {}
               : {
-                  lastModifiedRow: origin.hasOwnProperty('__isPlaceholder')
+                  lastModifiedRow: origin.hasOwnProperty(PLACE_HOLDER)
                     ? undefined
                     : {index: editIndex, data: {...origin}}
                 })
