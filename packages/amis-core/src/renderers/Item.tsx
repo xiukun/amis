@@ -27,6 +27,7 @@ import {
   BaseApiObject,
   BaseSchemaWithoutType,
   ClassName,
+  DataChangeReason,
   Schema
 } from '../types';
 import {HocStoreFactory} from '../WithStore';
@@ -530,7 +531,8 @@ export interface FormItemProps extends RendererProps {
   ) => void;
   onBulkChange?: (
     values: {[propName: string]: any},
-    submitOnChange?: boolean
+    submitOnChange?: boolean,
+    changeReason?: DataChangeReason
   ) => void;
   addHook: (
     fn: Function,
@@ -1270,6 +1272,7 @@ export class FormItemWrap extends React.Component<FormItemProps> {
       return (
         <div
           data-role="form-item"
+          data-amis-name={props.name}
           className={cx(
             `Form-item Form-item--horizontal`,
             isStatic && staticClassName ? staticClassName : className,
@@ -1425,6 +1428,7 @@ export class FormItemWrap extends React.Component<FormItemProps> {
       return (
         <div
           data-role="form-item"
+          data-amis-name={props.name}
           className={cx(
             `Form-item Form-item--normal`,
             isStatic && staticClassName ? staticClassName : className,
@@ -1612,6 +1616,7 @@ export class FormItemWrap extends React.Component<FormItemProps> {
       return (
         <div
           data-role="form-item"
+          data-amis-name={props.name}
           className={cx(
             `Form-item Form-item--inline`,
             isStatic && staticClassName ? staticClassName : className,
@@ -1746,6 +1751,7 @@ export class FormItemWrap extends React.Component<FormItemProps> {
       return (
         <div
           data-role="form-item"
+          data-amis-name={props.name}
           className={cx(
             `Form-item Form-item--row`,
             isStatic && staticClassName ? staticClassName : className,
@@ -1881,10 +1887,10 @@ export class FormItemWrap extends React.Component<FormItemProps> {
         props.formLabelAlign;
       const labelWidth = props.labelWidth || props.formLabelWidth;
       description = description || desc;
-
       return (
         <div
           data-role="form-item"
+          data-amis-name={props.name}
           className={cx(
             `Form-item Form-item--flex`,
             isStatic && staticClassName ? staticClassName : className,

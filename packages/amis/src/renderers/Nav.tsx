@@ -1482,7 +1482,8 @@ const ConditionBuilderWithRemoteOptions = withRemoteConfig({
 
 export default ThemedNavigation;
 @Renderer({
-  test: /(^|\/)(?:nav|navigation)$/,
+  type: 'nav',
+  alias: ['navigation'],
   name: 'nav'
 })
 export class NavigationRenderer extends React.Component<RendererProps> {

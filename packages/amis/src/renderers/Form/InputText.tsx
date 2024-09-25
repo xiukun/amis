@@ -1326,14 +1326,10 @@ export function mapItemIndex(
 }
 
 @OptionsControl({
-  type: 'input-text'
+  type: 'input-text',
+  alias: ['input-password', 'native-date', 'native-time', 'native-number']
 })
 export class TextControlRenderer extends TextControl {}
-
-@OptionsControl({
-  type: 'input-password'
-})
-export class PasswordControlRenderer extends TextControl {}
 
 @OptionsControl({
   type: 'input-email',
@@ -1346,18 +1342,3 @@ export class EmailControlRenderer extends TextControl {}
   validations: 'isUrl'
 })
 export class UrlControlRenderer extends TextControl {}
-
-@OptionsControl({
-  type: 'native-date'
-})
-export class NativeDateControlRenderer extends TextControl {}
-
-@OptionsControl({
-  type: 'native-time'
-})
-export class NativeTimeControlRenderer extends TextControl {}
-
-@OptionsControl({
-  type: 'native-number'
-})
-export class NativeNumberControlRenderer extends TextControl {}
