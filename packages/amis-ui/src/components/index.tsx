@@ -31,6 +31,7 @@ import Drawer from './Drawer';
 import Tabs from './Tabs';
 import Tab from './Tab';
 import Editor from './Editor';
+import DiffEditor from './DiffEditor';
 import Html from './Html';
 export * from './icons';
 import * as Icons from './icons';
@@ -141,6 +142,8 @@ import OverflowTpl from './OverflowTpl';
 import Signature from './Signature';
 import VerificationCode from './VerificationCode';
 
+import MobileDevTool from './MobileDevTool';
+
 export {
   NotFound,
   SplitPane, // ag 拆分面板组件
@@ -168,6 +171,7 @@ export {
   Tabs,
   Tab,
   Editor,
+  DiffEditor,
   Html,
   Icons,
   Layout,
@@ -281,5 +285,6 @@ export {
   CodeMirrorEditor,
   OverflowTpl,
   Signature,
-  VerificationCode
+  VerificationCode,
+  MobileDevTool
 };
